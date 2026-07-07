@@ -1,1 +1,1 @@
-Functions and Nested Loops project
+Functions and nested loops project
