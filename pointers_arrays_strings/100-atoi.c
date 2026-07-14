@@ -21,20 +21,12 @@ int _atoi(char *s)
 		}
 		else if (s[i] == '+')
 		{
-			/* Do nothing, sign remains the same */
+			/* Do nothing */
 		}
 		else if (s[i] >= '0' && s[i] <= '9')
 		{
 			found = 1;
-			/* Build the number negatively to prevent overflow */
-			if (sign == 1)
-			{
-				res = (res * 10) - (s[i] - '0');
-			}
-			else
-			{
-				res = (res * 10) + (s[i] - '0');
-			}
+			res = (res * 10) - (s[i] - '0');
 		}
 		else if (found == 1)
 		{
