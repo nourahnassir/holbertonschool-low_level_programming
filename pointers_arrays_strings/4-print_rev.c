@@ -11,19 +11,18 @@ void print_rev(char *s)
 	int len = 0;
 	int i;
 
-	/* الخطوة 1: حساب طول النص للوصول للنهاية */
+	/* Get string length */
 	while (s[len] != '\0')
 	{
 		len++;
 	}
 
-	/* الخطوة 2: الطباعة بالعكس بدءاً من الحرف الأخير */
+	/* Print in reverse */
 	for (i = len - 1; i >= 0; i--)
 	{
 		_putchar(s[i]);
 	}
 
-	/* الخطوة 3: طباعة سطر جديد */
 	_putchar('\n');
 }
 
