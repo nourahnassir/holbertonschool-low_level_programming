@@ -50,6 +50,21 @@ int main(void)
 			scanf("%d", &b);
 			printf("Result: %d\n", a * b);
 		}
+		else if (choice == 4)
+		{
+			printf("A: ");
+			scanf("%d", &a);
+			printf("B: ");
+			scanf("%d", &b);
+			if (b == 0)
+			{
+				printf("Error: division by zero\n");
+			}
+			else
+			{
+				printf("Result: %g\n", (double)a / b);
+			}
+		}
 		else if (choice < 0 || choice > 4)
 		{
 			printf("Invalid choice\n");
