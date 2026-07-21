@@ -2,6 +2,22 @@
 #include <stdlib.h>
 
 /**
+ * free_grid - frees a 2 dimensional grid
+ * @grid: the grid to free
+ * @height: height of the grid
+ */
+void free_grid(int **grid, int height)
+{
+	int h;
+
+	if (grid == NULL)
+		return;
+	for (h = 0; h < height; h++)
+		free(grid[h]);
+	free(grid);
+}
+
+/**
  * alloc_grid - returns a pointer to a 2 dimensional array of integers
  * @width: width of the grid
  * @height: height of the grid
@@ -20,36 +36,24 @@ int **alloc_grid(int width, int height)
 	if (grid == NULL)
 		return (NULL);
 
-	h = 0;
-	while (h < height)
+	for (h = 0; h < height; h++)
 	{
 		grid[h] = malloc(width * sizeof(int));
 		if (grid[h] == NULL)
 		{
-			while (h >= 0)
-			{
-				free(grid[h]);
-				h--;
-			}
+			for (w = h - 1; w >= 0; w--)
+				free(grid[w]);
 			free(grid);
 			return (NULL);
 		}
-		h++;
 	}
 
-	h = 0;
-	while (h < height)
+	for (h = 0; h < height; h++)
 	{
-		w = 0;
-		while (w < width)
-		{
+		for (w = 0; w < width; w++)
 			grid[h][w] = 0;
-			w++;
-		}
-		h++;
 	}
 
 	return (grid);
-
 }
 
