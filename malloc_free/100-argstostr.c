@@ -10,18 +10,17 @@
  */
 char *argstostr(int ac, char **av)
 {
-	int i, j, len = 0, total_len = 0, k = 0;
+	int i, j, total_len = 0, k = 0;
 	char *str;
 
 	if (ac == 0 || av == NULL)
 		return (NULL);
 
-	/* Calculate total length needed including \n for each argument */
 	for (i = 0; i < ac; i++)
 	{
 		for (j = 0; av[i][j] != '\0'; j++)
 			total_len++;
-		total_len++; /* for the '\n' */
+		total_len++;
 	}
 
 	str = malloc((total_len + 1) * sizeof(char));
@@ -41,5 +40,4 @@ char *argstostr(int ac, char **av)
 	str[k] = '\0';
 
 	return (str);
-} 
-
+}
