@@ -24,13 +24,13 @@ void print_all(const char * const format, ...)
 			if (format[i] == "cifs"[j])
 			{
 				printf("%s", sep);
-				if (format[i] == 'c')
+				if (j == 0)
 					printf("%c", va_arg(args, int));
-				if (format[i] == 'i')
+				if (j == 1)
 					printf("%d", va_arg(args, int));
-				if (format[i] == 'f')
+				if (j == 2)
 					printf("%f", (float)va_arg(args, double));
-				if (format[i] == 's')
+				if (j == 3)
 				{
 					str = va_arg(args, char *);
 					if (!str)
