@@ -3,14 +3,15 @@
 #include <string.h>
 
 /**
- * main - Keygen for crackme5
- * @argc: argument count
- * @argv: argument vector
- * Return: 0 on success
+ * main - Generates a key for crackme5 based on the username
+ * @argc: Number of arguments
+ * @argv: Array of arguments
+ * Return: Always 0
  */
 int main(int argc, char *argv[])
 {
-	long len, sum, v, i;
+	char *username;
+	int len, i, sum = 0, ch;
 	char key[7];
 
 	if (argc != 2)
@@ -19,44 +20,45 @@ int main(int argc, char *argv[])
 		return (1);
 	}
 
-	len = strlen(argv[1]);
-	sum = 0;
+	username = argv[1];
+	len = strlen(username);
+
 	for (i = 0; i < len; i++)
 	{
-		sum += argv[1][i];
+		sum += username[i];
 	}
 
-	key[0] = ((sum ^ 0x3b) & 0x3f) + 0x30;
+	key[0] = ((sum ^ 59) & 63) + 48;
 
-	v = 1;
+	sum = 1;
 	for (i = 0; i < len; i++)
 	{
-		v *= argv[1][i];
+		sum *= username[i];
 	}
-	key[1] = ((v ^ 0x48) & 0x3f) + 0x30;
+	key[1] = ((sum ^ 72) & 63) + 48;
 
-	v = 0;
+	ch = 0;
 	for (i = 0; i < len; i++)
 	{
-		if (argv[1][i] > v)
-			v = argv[1][i];
+		if (username[i] > ch)
+			ch = username[i];
 	}
-	srand(v ^ 0xe5);
-	key[2] = (rand() & 0x3f) + 0x30;
+	srand(ch ^ 229);
+	key[2] = (rand() & 63) + 48;
 
-	v = 0;
+	ch = 0;
 	for (i = 0; i < len; i++)
 	{
-		v += argv[1][i] * argv[1][i];
+		ch += username[i] * username[i];
 	}
-	key[3] = ((v ^ 0xe5) & 0x3f) + 0x30;
+	key[3] = ((ch ^ 229) & 63) + 48;
 
-	v = 0;
-	for (i = 0; i < len; i++)
+	ch = 0;
+	for (i = 0; i < username[0]; i++)
 	{
-		v = rand();
+		ch = rand();
 	}
-	key[4] = ((v ^ 0x229) & 0x3f) + 0x30;
+	key[4] = ((ch ^ 229) & 63) + 48;
 	key[5] = '\0';
 
 	printf("%s", key);
