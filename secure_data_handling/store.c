@@ -62,9 +62,7 @@ session_t *store_get(store_t *store, const char *id)
 	node_t *current;
 
 	if (!store || !id)
-	{
 		return (NULL);
-	}
 
 	current = store->head;
 	while (current)
