@@ -2,128 +2,177 @@
 #include <string.h>
 #include "store.h"
 
-void store_clear(store_t *store)
+/**
+ * store_init - Initialize a store
+ * @st: Pointer to the store
+ */
+void store_init(store_t *st)
 {
-	node_t *current;
-	node_t *next;
+	if (st)
+		st->head = NULL;
+}
 
-	if (!store)
-		return;
+/**
+ * node_create - Create a new store node
+ * @s: Session to store in the node
+ *
+ * Return: Pointer to the new node, or NULL on failure
+ */
+static node_t *node_create(session_t *s)
+{
+	node_t *n;
 
-	current = store->head;
-	while (current)
+	n = (node_t *)malloc(sizeof(*n));
+	if (!n)
+		return (NULL);
+
+	n->sess = s;
+	n->next = NULL;
+
+	return (n);
+}
+
+/**
+ * store_add - Add a session to the store
+ * @st: Pointer to the store
+ * @s: Session to add
+ *
+ * Return: 1 on success, 0 on failure
+ */
+int store_add(store_t *st, session_t *s)
+{
+	node_t *n, *cur;
+
+	if (!s)
+		return (0);
+
+	if (!st || !s->id)
 	{
-		next = current->next;
-		if (current->sess)
-		{
-			session_destroy(current->sess);
-		}
-		free(current);
-		current = next;
+		session_destroy(s);
+		return (0);
 	}
-	store->head = NULL;
-}
 
-void store_init(store_t *store)
-{
-	if (!store)
-		return;
-	store->head = NULL;
-}
+	cur = st->head;
 
-void store_destroy(store_t *store)
-{
-	if (!store)
-		return;
-	store_clear(store);
-	free(store);
-}
+	while (cur)
+	{
+		if (cur->sess && cur->sess->id &&
+			strcmp(cur->sess->id, s->id) == 0)
+		{
+			session_destroy(s);
+			return (0);
+		}
 
-int store_add(store_t *store, session_t *session)
-{
-	node_t *new_node;
+		cur = cur->next;
+	}
 
-	if (!store || !session)
+	n = node_create(s);
+	if (!n)
+	{
+		session_destroy(s);
 		return (0);
+	}
 
-	new_node = malloc(sizeof(*new_node));
-	if (!new_node)
-		return (0);
-
-	new_node->sess = session;
-	new_node->next = store->head;
-	store->head = new_node;
+	n->next = st->head;
+	st->head = n;
 
 	return (1);
 }
 
-session_t *store_get(store_t *store, const char *id)
+/**
+ * store_get - Find a session by ID
+ * @st: Pointer to the store
+ * @id: Session ID
+ *
+ * Return: Pointer to the session, or NULL if not found
+ */
+session_t *store_get(store_t *st, const char *id)
 {
-	node_t *current;
+	node_t *cur;
 
-	if (!store || !id)
+	if (!st || !id)
 		return (NULL);
 
-	current = store->head;
-	while (current)
+	cur = st->head;
+
+	while (cur)
 	{
-		if (current->sess && current->sess->id &&
-		    strcmp(current->sess->id, id) == 0)
-		{
-			return (current->sess);
-		}
-		current = current->next;
+		if (cur->sess && cur->sess->id &&
+			strcmp(cur->sess->id, id) == 0)
+			return (cur->sess);
+
+		cur = cur->next;
 	}
 
 	return (NULL);
 }
 
+/**
+ * store_delete - Delete a session from the store
+ * @st: Pointer to the store
+ * @id: Session ID to delete
+ * @out: Optional pointer for ownership transfer
+ *
+ * Return: 1 if deleted, 0 if not found
+ */
 int store_delete(store_t *st, const char *id, session_t **out)
 {
-	node_t *current;
-	node_t *prev = NULL;
+	node_t *cur, *prev;
 
 	if (!st || !id)
-	{
-		if (out)
-			*out = NULL;
 		return (0);
-	}
 
-	current = st->head;
-	while (current)
+	prev = NULL;
+	cur = st->head;
+
+	while (cur)
 	{
-		if (current->sess && current->sess->id &&
-		    strcmp(current->sess->id, id) == 0)
+		if (cur->sess && cur->sess->id &&
+			strcmp(cur->sess->id, id) == 0)
 		{
 			if (prev)
-			{
-				prev->next = current->next;
-			}
+				prev->next = cur->next;
 			else
-			{
-				st->head = current->next;
-			}
+				st->head = cur->next;
 
 			if (out)
-			{
-				*out = current->sess;
-			}
+				*out = cur->sess;
 			else
-			{
-				if (current->sess)
-				{
-					session_destroy(current->sess);
-				}
-			}
-			free(current);
+				session_destroy(cur->sess);
+
+			free(cur);
 			return (1);
 		}
-		prev = current;
-		current = current->next;
+
+		prev = cur;
+		cur = cur->next;
 	}
 
-	if (out)
-		*out = NULL;
 	return (0);
+}
+
+/**
+ * store_destroy - Destroy all sessions and nodes in a store
+ * @st: Pointer to the store
+ */
+void store_destroy(store_t *st)
+{
+	node_t *cur, *next;
+
+	if (!st)
+		return;
+
+	cur = st->head;
+
+	while (cur)
+	{
+		next = cur->next;
+
+		session_destroy(cur->sess);
+		free(cur);
+
+		cur = next;
+	}
+
+	st->head = NULL;
 }
