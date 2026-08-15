@@ -36,6 +36,8 @@ shash_table_t *shash_table_create(unsigned long int size)
  * add_to_sorted_list - Adds a node to the sorted linked list
  * @ht: Pointer to the sorted hash table
  * @new: Pointer to the new node to add
+ *
+ * Return: void
  */
 void add_to_sorted_list(shash_table_t *ht, shash_node_t *new)
 {
@@ -161,6 +163,8 @@ char *shash_table_get(const shash_table_t *ht, const char *key)
 /**
  * shash_table_print - Prints a sorted hash table using the sorted linked list
  * @ht: Pointer to the sorted hash table
+ *
+ * Return: void
  */
 void shash_table_print(const shash_table_t *ht)
 {
@@ -186,6 +190,8 @@ void shash_table_print(const shash_table_t *ht)
 /**
  * shash_table_print_rev - Prints a sorted hash table in reverse order
  * @ht: Pointer to the sorted hash table
+ *
+ * Return: void
  */
 void shash_table_print_rev(const shash_table_t *ht)
 {
@@ -211,6 +217,8 @@ void shash_table_print_rev(const shash_table_t *ht)
 /**
  * shash_table_delete - Deletes a sorted hash table
  * @ht: Pointer to the sorted hash table
+ *
+ * Return: void
  */
 void shash_table_delete(shash_table_t *ht)
 {
