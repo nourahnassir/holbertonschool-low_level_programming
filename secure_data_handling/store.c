@@ -17,7 +17,6 @@ void store_clear(store_t *store)
 		if (current->sess)
 		{
 			session_destroy(current->sess);
-			current->sess = NULL;
 		}
 		free(current);
 		current = next;
@@ -112,10 +111,7 @@ int store_delete(store_t *st, const char *id, session_t **out)
 			}
 			else
 			{
-				if (current->sess)
-				{
-					session_destroy(current->sess);
-				}
+				session_destroy(current->sess);
 			}
 			free(current);
 			return (1);
