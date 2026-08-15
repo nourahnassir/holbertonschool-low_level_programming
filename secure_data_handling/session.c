@@ -88,3 +88,8 @@ int session_update(session_t *sess, const unsigned char *data, size_t data_len)
 
 	return (1);
 }
+
+int session_set_data(session_t *sess, const unsigned char *data, size_t data_len)
+{
+	return (session_update(sess, data, data_len));
+}
