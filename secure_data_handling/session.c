@@ -2,75 +2,45 @@
 #include <string.h>
 #include "session.h"
 
-session_t *session_create(const char *id, unsigned int uid, const unsigned char *data, size_t data_len)
+session_t *session_create(const char *id, int data)
 {
-	session_t *s;
+	session_t *sess;
 
-	s = (session_t *)malloc(sizeof(*s));
-	if (!s)
+	if (!id)
 		return (NULL);
 
-	s->id = strdup(id);
-	if (!s->id)
+	sess = malloc(sizeof(*sess));
+	if (!sess)
+		return (NULL);
+
+	sess->id = strdup(id);
+	if (!sess->id)
 	{
-		free(s);
+		free(sess);
 		return (NULL);
 	}
-
-	s->uid = uid;
-
-	if (data_len > 0 && data != NULL)
-	{
-		s->data = (unsigned char *)malloc(data_len);
-		if (!s->data)
-		{
-			free(s->id);
-			free(s);
-			return (NULL);
-		}
-		memcpy(s->data, data, data_len);
-		s->data_len = data_len;
-	}
-	else
-	{
-		s->data = NULL;
-		s->data_len = 0;
-	}
-
-	return (s);
+	sess->data = data;
+	return (sess);
 }
 
-int session_set_data(session_t *s, const unsigned char *data, size_t data_len)
+void session_destroy(session_t *sess)
 {
-	unsigned char *tmp;
-
-	if (!s)
-		return (0);
-
-	if (data_len == 0)
-	{
-		free(s->data);
-		s->data = NULL;
-		s->data_len = 0;
-		return (1);
-	}
-
-	tmp = (unsigned char *)realloc(s->data, data_len);
-	if (!tmp)
-		return (0);
-
-	s->data = tmp;
-	memcpy(s->data, data, data_len);
-	s->data_len = data_len;
-	return (1);
-}
-
-void session_destroy(session_t *s)
-{
-	if (!s)
+	if (!sess)
 		return;
 
-	free(s->id);
-	free(s->data);
-	free(s);
+	if (sess->id)
+	{
+		free(sess->id);
+		sess->id = NULL;
+	}
+	free(sess);
+}
+
+int session_update(session_t *sess, int data)
+{
+	if (!sess)
+		return (0);
+
+	sess->data = data;
+	return (1);
 }
