@@ -209,6 +209,23 @@ void print_entry(unsigned long int e_entry, unsigned char *e_ident)
 }
 
 /**
+ * display_elf_info - Displays all ELF header info.
+ * @header: Pointer to ELF header.
+ */
+void display_elf_info(Elf64_Ehdr *header)
+{
+	check_elf(header->e_ident);
+	print_magic(header->e_ident);
+	print_class(header->e_ident);
+	print_data(header->e_ident);
+	print_version(header->e_ident);
+	print_osabi(header->e_ident);
+	print_abiversion(header->e_ident);
+	print_type(header->e_type, header->e_ident);
+	print_entry(header->e_entry, header->e_ident);
+}
+
+/**
  * main - Displays information contained in the ELF header.
  * @argc: Number of arguments.
  * @argv: Array of arguments.
@@ -243,15 +260,7 @@ int main(int argc, char *argv[])
 		print_error("Error: Can't read from file");
 	}
 
-	check_elf(header->e_ident);
-	print_magic(header->e_ident);
-	print_class(header->e_ident);
-	print_data(header->e_ident);
-	print_version(header->e_ident);
-	print_osabi(header->e_ident);
-	print_abiversion(header->e_ident);
-	print_type(header->e_type, header->e_ident);
-	print_entry(header->e_entry, header->e_ident);
+	display_elf_info(header);
 
 	free(header);
 	if (close(fd) == -1)
