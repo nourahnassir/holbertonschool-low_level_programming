@@ -13,11 +13,11 @@ int create_textfile(const char *filename, char *text_content)
 	ssize_t n_written = 0, len = 0;
 
 	if (!filename)
-		return (0);
+		return (-1);
 
 	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (fd == -1)
-		return (0);
+		return (-1);
 
 	if (text_content)
 	{
@@ -29,7 +29,7 @@ int create_textfile(const char *filename, char *text_content)
 	close(fd);
 
 	if (n_written == -1 || n_written != len)
-		return (0);
+		return (-1);
 
 	return (n_written);
 }
